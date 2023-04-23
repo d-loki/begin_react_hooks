@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react';
+import { memo, useMemo, useReducer, useState } from 'react';
 
 const generatePrime = (n) => {
   if (n > 90000) {
@@ -29,14 +29,11 @@ const PrimeNumber = ({ index, number }) => {
   );
 };
 
-// 🦁 Crée PrimeNumberMemo afin de ne pas render PrimeNumber à chaque fois
-//    qu'un élément de la liste change.
-// 💡 const PrimeNumberMemo = ...
+const PrimeNumberMemo = memo(PrimeNumber)
+
 export const PrimeNumbers = () => {
   const [max, setMax] = useState(10000);
-  // 🦁 Utilise useMemo avec `max` comme dépendance afin de ne pas recalculer les nombres
-  //    premiers à chaque render
-  const primes = generatePrime(max);
+  const primes = useMemo(() => generatePrime(max), [max]);
 
   return (
     <div>
@@ -48,7 +45,7 @@ export const PrimeNumbers = () => {
       />
       <ul className="grid-prime-number">
         {primes.map((prime, index) => (
-          <PrimeNumber key={prime} index={index} number={prime} />
+          <PrimeNumberMemo key={prime} index={index} number={prime} />
         ))}
       </ul>
     </div>
